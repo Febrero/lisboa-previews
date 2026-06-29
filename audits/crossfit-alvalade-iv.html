@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditoria Digital — CrossFit Alvalade IV</title>
+<style>
+  :root{
+    --ink:#1c2b27; --muted:#5b6b66; --line:#dde5e1;
+    --accent:#1f5c45; --accent-soft:#e8f1ec;
+    --good:#2e7d52; --warn:#b8860b; --bad:#b3401f; --bg:#fff;
+    --bar-bg:#eef2f0;
+  }
+  *{box-sizing:border-box;}
+  @page{ size:A4; margin:9mm 12mm 8mm; }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); font-size:9.6px; line-height:1.32; background:#f3f5f4;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{ width:210mm; min-height:297mm; margin:0 auto; background:var(--bg); padding:14mm; }
+  @media print{ body{background:#fff;} .page{width:auto;min-height:auto;margin:0;padding:0;} }
+  @media screen and (max-width:820px){
+    body{font-size:13px;}
+    .page{ width:100%; min-height:auto; padding:18px; }
+    .band h1{font-size:20px;} .grade .letter{font-size:40px;}
+    .bar-row{ grid-template-columns:120px 1fr 36px; }
+    .cols{ grid-template-columns:1fr; gap:6px; }
+    .potential{ flex-direction:column; }
+    .foot{ flex-direction:column; gap:4px; }
+  }
+
+  .band{ display:flex; justify-content:space-between; align-items:center;
+    background:var(--accent); color:#fff; border-radius:10px; padding:10px 16px; }
+  .band h1{ font-size:17px; margin:0 0 2px; letter-spacing:.2px; }
+  .band .sub{ font-size:11px; opacity:.9; }
+  .grade{ text-align:center; min-width:84px; }
+  .grade .letter{ font-size:36px; font-weight:800; line-height:1; }
+  .grade .of{ font-size:10px; opacity:.85; }
+  .grade.A .letter{color:#bff0d0} .grade.B .letter{color:#dff0c2}
+  .grade.C .letter{color:#ffe9a8} .grade.D .letter{color:#ffd0a8} .grade.F .letter{color:#ffc1ad}
+
+  .prov{ margin-top:8px; background:#fff7e6; border:1px solid #f0d68a; color:#7a5b09;
+    padding:6px 10px; border-radius:6px; font-size:10px; }
+
+  h2{ font-size:10.5px; text-transform:uppercase; letter-spacing:.8px; color:var(--accent);
+    margin:9px 0 5px; border-bottom:2px solid var(--accent-soft); padding-bottom:3px; }
+
+  .bars{ display:grid; grid-template-columns:1fr; gap:4px; }
+  .bar-row{ display:grid; grid-template-columns:150px 1fr 38px; align-items:center; gap:10px; }
+  .bar-row .name{ font-weight:600; }
+  .bar-row .name small{ display:block; font-weight:400; color:var(--muted); font-size:9px; }
+  .track{ background:var(--bar-bg); border-radius:5px; height:12px; overflow:hidden; }
+  .fill{ height:100%; background:var(--accent); border-radius:5px; }
+  .fill.lo{ background:var(--bad);} .fill.mid{ background:var(--warn);} .fill.hi{ background:var(--good);}
+  .val{ text-align:right; font-variant-numeric:tabular-nums; color:var(--muted); }
+  .total{ margin-top:6px; font-size:12px; }
+  .total b{ font-size:16px; color:var(--accent); }
+  .legend{ color:var(--muted); font-size:9px; margin-top:3px; }
+
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  ul{ margin:0; padding-left:15px; } li{ margin-bottom:2.5px; }
+  .good li::marker{ color:var(--good);}
+  .tag{ display:inline-block; font-size:8.5px; padding:1px 5px; border-radius:4px; margin-left:5px;
+    background:var(--accent-soft); color:var(--accent); font-weight:600; }
+  .tag.imp{ background:#fff1d6; color:#8a6500; }
+
+  table{ width:100%; border-collapse:collapse; font-size:10px; margin-top:4px; }
+  th,td{ text-align:left; padding:3.5px 7px; border-bottom:1px solid var(--line); }
+  th{ color:var(--muted); text-transform:uppercase; font-size:8.5px; letter-spacing:.5px; }
+  tr.self td{ background:var(--accent-soft); font-weight:700; }
+  .yes{color:var(--good);font-weight:700;} .no{color:var(--bad);font-weight:700;}
+
+  .opp{ background:var(--accent-soft); border-left:4px solid var(--accent); border-radius:8px;
+    padding:10px 13px; margin-top:3px; }
+  .opp .big{ font-size:13.5px; font-weight:700; color:var(--accent); margin-bottom:3px; }
+  .opp .plan{ font-size:12px; } .opp .note{ color:var(--muted); font-size:9.5px; margin-top:6px; }
+  .potential{ display:flex; gap:12px; margin:11px 0 4px; }
+  .pcol{ flex:1; background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; text-align:center; }
+  .pnum{ font-size:19px; font-weight:800; color:var(--accent); line-height:1.1; }
+  .plbl{ font-size:8.5px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:.4px; }
+  .timeline{ margin:11px 0 2px; }
+  .tl-title{ font-size:9.5px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
+  .tl-row{ display:flex; gap:9px; font-size:10px; margin-bottom:4px; align-items:baseline; }
+  .tl-day{ flex:0 0 42px; font-weight:800; color:var(--accent); }
+
+  .foot{ margin-top:20px; border-top:2px solid var(--accent-soft); padding-top:8px;
+    color:var(--muted); font-size:9.5px; display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="band">
+    <div>
+      <h1>CrossFit Alvalade IV</h1>
+      <div class="sub">Ginásio / Fitness · Lisboa Norte · Auditoria de presença digital</div>
+    </div>
+    <div class="grade C">
+      <div class="letter">C</div>
+      <div class="of">26/50</div>
+    </div>
+  </div>
+
+  
+
+  <h2>Como está hoje, ponto a ponto</h2>
+  <div class="bars">
+    
+    <div class="bar-row">
+      <div class="name">Presença no Google<small>a confirmar</small></div>
+      <div class="track"><div class="fill mid" style="width:40%"></div></div>
+      <div class="val">4/10</div>
+    </div>
+    
+    <div class="bar-row">
+      <div class="name">Avaliações de clientes</div>
+      <div class="track"><div class="fill hi" style="width:90%"></div></div>
+      <div class="val">9/10</div>
+    </div>
+    
+    <div class="bar-row">
+      <div class="name">Site e visibilidade<small>a confirmar</small></div>
+      <div class="track"><div class="fill mid" style="width:50%"></div></div>
+      <div class="val">5/10</div>
+    </div>
+    
+    <div class="bar-row">
+      <div class="name">Redes sociais<small>a confirmar</small></div>
+      <div class="track"><div class="fill lo" style="width:0%"></div></div>
+      <div class="val">0/10</div>
+    </div>
+    
+    <div class="bar-row">
+      <div class="name">Contacto e marcação<small>a confirmar</small></div>
+      <div class="track"><div class="fill lo" style="width:30%"></div></div>
+      <div class="val">3/10</div>
+    </div>
+    
+  </div>
+  <div class="total">Nota global: <b>26/50</b> &nbsp;·&nbsp; <b>C</b></div>
+  <div class="legend">De 0 a 50 — quanto maior, melhor. As avaliações de clientes são o que mais conta.</div>
+
+  <div class="cols">
+    <div>
+      <h2>O que já funciona</h2>
+      <ul class="good">
+        <li>Já tem ficha no Google.</li><li>Excelentes avaliações (4.9★) — um ótimo ponto de partida.</li><li>Site próprio a funcionar.</li>
+        
+      </ul>
+    </div>
+    <div>
+      <h2>Melhorias rápidas (maior impacto primeiro)</h2>
+      <ul>
+        
+        <li>Pôr um botão para marcar ou encomendar online<span class="tag imp">★★★</span></li>
+        
+        <li>Pôr boas fotos e o horário completo no Google<span class="tag imp">★★</span></li>
+        
+        <li>Acelerar o carregamento do site no telemóvel<span class="tag imp">★★</span></li>
+        
+        <li>Pôr um botão de WhatsApp no Google e no site<span class="tag imp">★★</span></li>
+        
+        <li>Ajudar o Google a perceber melhor o seu negócio<span class="tag imp">★</span></li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+  <h2>Como está face à concorrência (Ginásio / Fitness)</h2>
+  <table>
+    <tr><th>Negócio</th><th>Nota</th><th>Avaliações</th><th>Site</th></tr>
+    <tr class="self">
+      <td>CrossFit Alvalade IV (você)</td>
+      <td>4.9★</td>
+      <td>162</td>
+      <td><span class="yes">Sim</span></td>
+    </tr>
+    
+    <tr>
+      <td>Balance - Aveiro</td>
+      <td>4.6★</td>
+      <td>135</td>
+      <td><span class="yes">Sim</span></td>
+    </tr>
+    
+    <tr>
+      <td>Pavilhão do Oriente</td>
+      <td>4.4★</td>
+      <td>132</td>
+      <td><span class="yes">Sim</span></td>
+    </tr>
+    
+  </table>
+  
+
+  <h2>O que pode ganhar</h2>
+  <div class="opp">
+    <div class="big">Plano a partir de €39/mês</div>
+    <div class="plan"><b>Cobre-se com:</b> Um cliente que fique alguns meses já paga o serviço..</div>
+    
+    
+    <div class="note">Números prudentes, só para dar uma ideia realista — dependem do trabalho feito e do mercado, não são uma garantia.</div>
+  </div>
+
+  <div class="foot">
+    <div>Auditoria gratuita por <b>Pedro Capela</b> · 936 882 364 (WhatsApp disponível)</div>
+    <div>29/06/2026</div>
+  </div>
+
+</div>
+</body>
+</html>
